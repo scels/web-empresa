@@ -1,8 +1,8 @@
-# Web Empresa
+# Libélula Cerámica
 
-Aplicación web construida con **Next.js**, **React**, **TypeScript** y **Tailwind CSS**.
+Primera versión de la tienda de autor de Libélula, construida con **Next.js**, **React**, **TypeScript** y **Tailwind CSS**. Incluye portada, catálogo, fichas de producto, historia del taller y contacto.
 
-Este repositorio contiene el código fuente de la aplicación y está pensado para desarrollarse, versionarse y desplegarse de forma independiente de cualquier herramienta de generación de código o plataforma de diseño.
+El catálogo y las fotografías actuales son contenido de muestra. No se muestran precios ni se aceptan pedidos o pagos todavía. La web anterior sigue siendo el canal de contacto mientras se confirma la información del negocio.
 
 ---
 
@@ -117,13 +117,22 @@ npm run build
 web-empresa/
 │
 ├── public/
-│   └── Assets estáticos
+│   └── Recursos estáticos propios
 │
 ├── src/
-│   └── app/
-│       ├── layout.tsx
-│       ├── page.tsx
-│       └── globals.css
+│   ├── app/
+│   │   ├── contact/             # Contacto provisional
+│   │   ├── taller/              # Historia y proceso
+│   │   ├── tienda/              # Catálogo y fichas
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── layout/              # Cabecera y pie
+│   │   └── store/               # Componentes de catálogo
+│   └── lib/
+│       ├── commerce/            # Notas de integración futura
+│       └── products.ts          # Contenido inicial del catálogo
 │
 ├── .nvmrc
 ├── .gitignore
@@ -307,6 +316,33 @@ Deployment
 El código fuente debe permanecer bajo control del repositorio.
 
 Las herramientas de IA pueden utilizarse para desarrollar y modificar el código, pero no deben convertirse en una dependencia necesaria para ejecutar, desplegar o mantener la aplicación.
+
+---
+
+# Contenido y Puesta en Marcha
+
+Los productos de ejemplo viven en `src/lib/products.ts`. Cada pieza incluye un identificador estable, nombre, categoría, texto e imagen. Sustituye los textos y fotografías de muestra por el catálogo y las imágenes propias antes de publicar. Las fotos actuales se sirven desde Unsplash; `next.config.ts` permite ese dominio únicamente para la primera maqueta.
+
+Antes de habilitar ventas, confirmar y añadir:
+
+- Catálogo real: nombres, disponibilidad, medidas, materiales y cuidados.
+- Precios, impuestos, existencias y política para encargos o piezas únicas.
+- Fotografías y derechos de uso de las imágenes.
+- Correo de contacto, origen y zonas de envío, costes, embalaje y plazos.
+- Condiciones de compra, privacidad, cookies y devoluciones aplicables.
+- Proveedor de pago y operador logístico.
+
+Las notas de arquitectura para estas dos últimas integraciones están en `src/lib/commerce/`.
+
+---
+
+# Rutas
+
+- `/`: portada y selección de piezas.
+- `/tienda`: catálogo.
+- `/tienda/[slug]`: detalle de una pieza.
+- `/taller`: relato del taller y el proceso.
+- `/contact`: enlace provisional a la web actual.
 
 ---
 

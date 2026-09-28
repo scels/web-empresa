@@ -1,69 +1,84 @@
 import Image from "next/image";
+import Link from "next/link";
+
+import { ProductCard } from "@/components/store/ProductCard";
+import { products } from "@/lib/products";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <>
+      <section className="hero">
         <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+          alt="Cerámica artesanal creada en el taller"
+          className="hero__image"
+          fill
+          loading="eager"
+          sizes="100vw"
+          src={products[0].image}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        <div className="hero__veil" />
+        <div className="hero__content">
+          <p className="hero__kicker">Cerámica hecha despacio · Desde el taller</p>
+          <h1>La belleza de lo que no se repite.</h1>
+          <p>
+            Piezas de barro hechas a mano para acompañar los pequeños rituales
+            de cada día.
           </p>
+          <Link className="button button--light" href="/tienda">
+            Explorar las piezas <span aria-hidden="true">↗</span>
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now Motherfucker
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <span className="hero__index">01 / Hecho en el taller</span>
+      </section>
+
+      <section className="home-intro section-wrap">
+        <p className="eyebrow">El taller Libélula</p>
+        <h2>La huella de las manos también es parte del diseño.</h2>
+        <Link className="text-link" href="/taller">
+          Conoce el taller <span aria-hidden="true">↗</span>
+        </Link>
+      </section>
+
+      <section className="featured-section section-wrap">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Una pequeña selección</p>
+            <h2>Objetos para quedarse.</h2>
+          </div>
+          <Link className="text-link" href="/tienda">
+            Ver todas las piezas <span aria-hidden="true">↗</span>
+          </Link>
         </div>
-      </main>
-    </div>
+        <div className="product-grid">
+          {products.map((product) => (
+            <ProductCard key={product.slug} product={product} />
+          ))}
+        </div>
+      </section>
+
+      <section className="studio-note">
+        <div className="studio-note__image">
+          <Image
+            alt="Detalle de una pieza artesanal de cerámica"
+            fill
+            sizes="(max-width: 760px) 100vw, 50vw"
+            src={products[1].image}
+            style={{ objectPosition: products[1].imagePosition ?? "center" }}
+          />
+        </div>
+        <div className="studio-note__copy">
+          <p className="eyebrow">De la tierra a tus manos</p>
+          <h2>El tiempo también se queda en la pieza.</h2>
+          <p>
+            Barro, agua, fuego y muchas decisiones pequeñas. Así nace cada
+            objeto: sin prisa, cerca de la materia y lejos de la perfección en
+            serie.
+          </p>
+          <Link className="text-link" href="/taller">
+            Asómate al proceso <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }
