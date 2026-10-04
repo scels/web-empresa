@@ -7,7 +7,7 @@ import {
   isLocale,
   type Locale,
 } from "@/lib/i18n/dictionaries";
-import { products } from "@/lib/products";
+import { getProducts } from "@/sanity/lib/data";
 
 type StorePageProps = {
   params: Promise<{ locale: string }>;
@@ -29,6 +29,7 @@ export default async function StorePage({ params }: StorePageProps) {
 
   const locale: Locale = rawLocale;
   const copy = dictionaries[locale];
+  const products = await getProducts();
 
   return (
     <div className="page-shell">
@@ -44,11 +45,15 @@ export default async function StorePage({ params }: StorePageProps) {
           </span>
           <span>{copy.shop.note}</span>
         </div>
-        <div className="product-grid">
-          {products.map((product) => (
-            <ProductCard key={product.slug} locale={locale} product={product} />
-          ))}
-        </div>
+        {products.length ? (
+          <div className="product-grid">
+            {products.map((product) => (
+              <ProductCard key={product.slug} locale={locale} product={product} />
+            ))}
+          </div>
+        ) : (
+          <p>{copy.shop.emptyCatalog}</p>
+        )}
       </section>
     </div>
   );

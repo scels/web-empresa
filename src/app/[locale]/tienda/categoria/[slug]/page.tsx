@@ -8,17 +8,19 @@ import {
   type Locale,
 } from "@/lib/i18n/dictionaries";
 import {
-  getCategories,
+  getCategories as getSanityCategories,
   getCategoryBySlug,
   getProductsByCategory,
-} from "@/lib/products";
+} from "@/sanity/lib/data";
+import { getLocalizedValue } from "@/sanity/lib/localized";
 
 type CategoryPageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
-export function generateStaticParams() {
-  return getCategories().map((category) => ({ slug: category.slug }));
+export async function generateStaticParams() {
+  const categories = await getSanityCategories();
+  return categories.map((category) => ({ slug: category.slug }));
 }
 
 export async function generateMetadata({
@@ -27,11 +29,11 @@ export async function generateMetadata({
   const { locale: rawLocale, slug } = await params;
   if (!isLocale(rawLocale)) return {};
 
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) return {};
 
   return {
-    title: category.name[rawLocale],
+    title: getLocalizedValue(category.name, rawLocale),
     description: dictionaries[rawLocale].shop.categoryIntro,
   };
 }
@@ -42,20 +44,21 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   const locale: Locale = rawLocale;
   const copy = dictionaries[locale];
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
-  const categoryProducts = getProductsByCategory(slug);
+  const categoryName = getLocalizedValue(category.name, locale);
+  const categoryProducts = await getProductsByCategory(slug);
 
   return (
     <div className="page-shell">
       <section className="page-intro">
         <p className="eyebrow">{copy.shop.eyebrow}</p>
-        <h1>{category.name[locale]}</h1>
+        <h1>{categoryName}</h1>
         <p>{copy.shop.categoryIntro}</p>
       </section>
       <section
-        aria-label={category.name[locale]}
+        aria-label={categoryName}
         className="catalog-section"
       >
         {categoryProducts.length ? (

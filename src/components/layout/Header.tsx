@@ -2,15 +2,16 @@ import Link from "next/link";
 
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { dictionaries, localizedPath, type Locale } from "@/lib/i18n/dictionaries";
-import { getCategories } from "@/lib/products";
+import { getCategories } from "@/sanity/lib/data";
+import { getLocalizedValue } from "@/sanity/lib/localized";
 
 type HeaderProps = {
   locale: Locale;
 };
 
-export function Header({ locale }: HeaderProps) {
+export async function Header({ locale }: HeaderProps) {
   const copy = dictionaries[locale];
-  const categories = getCategories();
+  const categories = await getCategories();
 
   return (
     <header className="site-header">
@@ -43,7 +44,7 @@ export function Header({ locale }: HeaderProps) {
                     )}
                     key={category.slug}
                   >
-                    {category.name[locale]}
+                    {getLocalizedValue(category.name, locale)}
                   </Link>
                 ))}
               </div>

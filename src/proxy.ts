@@ -6,6 +6,7 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const firstSegment = pathname.split("/")[1];
 
+  if (firstSegment === "studio") return NextResponse.next();
   if (isLocale(firstSegment)) return NextResponse.next();
 
   const localizedUrl = request.nextUrl.clone();

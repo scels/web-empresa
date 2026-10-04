@@ -9,6 +9,7 @@ El catálogo y las fotografías actuales son contenido de muestra. No se muestra
 # Stack Tecnológico
 
 - **Next.js**: Framework principal para construir la aplicación web.
+- **Sanity**: CMS del catálogo; el Studio se sirve en `/studio`.
 - **React**: Librería utilizada para construir la interfaz mediante componentes.
 - **TypeScript**: JavaScript con tipado estático.
 - **Tailwind CSS**: Framework de utilidades CSS para construir la interfaz.
@@ -322,43 +323,32 @@ Las herramientas de IA pueden utilizarse para desarrollar y modificar el código
 
 ---
 
-# Contenido y Puesta en Marcha
+## Contenido y Puesta en Marcha
 
-Los textos de interfaz están en `src/lib/i18n/dictionaries.ts`. Los datos de cada pieza incluyen nombre, descripción, categoría y texto alternativo en `es`, `ca` y `en`.
+Los productos, las categorías y el documento `Contenido del sitio` se gestionan en Sanity. Los esquemas están en `src/sanity/schemaTypes/`, las consultas GROQ en `src/sanity/lib/queries.ts` y el cliente de lectura en `src/sanity/lib/client.ts`. `Contenido del sitio` permite editar portada, taller y contacto; las etiquetas de interfaz siguen en `src/lib/i18n/dictionaries.ts`.
 
-El catálogo actual vive en `src/lib/products.ts` y es solo de muestra. Para añadir una pieza ahora, crea un objeto con un `slug` único, completa los campos en los tres idiomas y asígnale una categoría. Si aparece una categoría nueva, inclúyela en el producto: la navegación la detecta y genera su página automáticamente. Para retirar una pieza de esta versión, elimínala del array. **Estos cambios en el archivo local requieren `git push` y un despliegue de Vercel.**
+Para conectar el proyecto local:
 
-Para administrar altas, cambios y bajas sin desplegar, recomiendo conectar Shopify como fuente de catálogo e inventario y mantener este Next.js como escaparate headless. Los productos, categorías, traducciones, fotos, precios y existencias se gestionarían desde Shopify Admin; el sitio leería esos datos y se refrescaría al publicarlos. Se puede importar el catálogo con CSV. Conviene archivar piezas retiradas en vez de borrarlas para conservar pedidos y redirigir enlaces antiguos.
+1. Copia `.env.example` a `.env.local` y completa `NEXT_PUBLIC_SANITY_PROJECT_ID` y `SANITY_STUDIO_PROJECT_ID` con el mismo ID de proyecto.
+2. En Sanity Manage, añade `http://localhost:3000` como origen CORS y permite credenciales.
+3. Arranca `npm run dev`, abre `http://localhost:3000/studio` e inicia sesión con tu cuenta de Sanity.
+4. Crea y publica una categoría; después crea un producto, asígnale esa categoría, añade fotografía y texto alternativo, y publícalo.
+5. Crea un documento `Contenido del sitio` para editar Inicio, Taller y Contacto.
+6. Comprueba `/es/tienda/<slug>` y las páginas públicas. Los cambios publicados pueden tardar hasta un minuto en aparecer.
 
-Shopify es una recomendación, no está conectado todavía: hacen falta una cuenta y credenciales para implementar la conexión. Un CMS editorial como Sanity no resuelve por sí solo stock, pedidos y pagos; requeriría integrar otro sistema para esas funciones.
+Los campos de texto traducibles admiten español, catalán e inglés; si falta una traducción, el escaparate usa el español. Precio y referencia son opcionales. El precio es informativo: no hay carrito ni pagos.
 
 ## Imágenes
 
-Las fotos de muestra se sirven desde Unsplash. Para fotos propias que deban viajar con el código, usa `public/images/products/<slug>/` con nombres estables. La guía completa de tamaños, formato, `next/image` y migración a una biblioteca administrable está en [public/images/README.md](public/images/README.md).
-
-No conviene guardar en `public/` el catálogo definitivo si necesitas cambiar fotos sin desplegar: cada archivo versionado forma parte del deploy. Al conectar Shopify, usaremos su CDN de archivos o un servicio de imágenes administrado, y limitaremos sus dominios en `next.config.ts`.
+Las fotografías del catálogo y el contenido editorial se suben a Sanity y se sirven desde su CDN con `next/image`. El dominio permitido está limitado en `next.config.ts`; no hace falta copiar imágenes al repositorio ni desplegar para cambiarlas.
 
 ## Siguientes Pasos
 
-1. Sustituir los ejemplos por productos reales, fotografías y traducciones aprobadas.
-2. Elegir y configurar la fuente de catálogo administrable; definir stock, variantes y piezas únicas.
-3. Conectar el catálogo y añadir carrito y checkout alojado por el proveedor.
-4. Confirmar países, impuestos, embalaje, costes y plazos con el taller y el transportista.
-5. Automatizar confirmación de pago, envío, seguimiento, incidencias y devoluciones.
-6. Revisar condiciones de venta, privacidad y obligaciones fiscales aplicables.
+1. Crear y publicar el documento `Contenido del sitio` con textos e imágenes reales.
+2. Completar categorías y productos, indicando las traducciones y el estado de cada pieza.
+3. Añadir en Vercel las mismas variables `NEXT_PUBLIC_SANITY_*` y el dominio de producción a CORS.
 
-La pasarela, la logística y sus tarifas siguen pendientes de decisión; no se deben anunciar como disponibles hasta verificarlas.
-
-Antes de habilitar ventas, confirmar y añadir:
-
-- Catálogo real: nombres, disponibilidad, medidas, materiales y cuidados.
-- Precios, impuestos, existencias y política para encargos o piezas únicas.
-- Fotografías y derechos de uso de las imágenes.
-- Correo de contacto, origen y zonas de envío, costes, embalaje y plazos.
-- Condiciones de compra, privacidad, cookies y devoluciones aplicables.
-- Proveedor de pago y operador logístico.
-
-Las notas de arquitectura para estas dos últimas integraciones están en `src/lib/commerce/`.
+La compra online, los pagos y los envíos quedan fuera de esta fase.
 
 ---
 
