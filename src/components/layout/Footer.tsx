@@ -1,28 +1,46 @@
 import Link from "next/link";
 
-export function Footer() {
+import { dictionaries, localizedPath, type Locale } from "@/lib/i18n/dictionaries";
+
+type FooterProps = {
+  locale: Locale;
+};
+
+export function Footer({ locale }: FooterProps) {
+  const copy = dictionaries[locale];
+
   return (
     <footer className="site-footer">
       <div className="site-footer__top">
         <div>
-          <Link className="wordmark wordmark--footer" href="/">
+          <Link
+            aria-label={`${copy.site.brand}, ${copy.navigation.home}`}
+            className="wordmark wordmark--footer"
+            href={localizedPath(locale)}
+          >
             <span aria-hidden="true" className="wordmark__mark">l.</span>
-            <span>libélula<span className="wordmark__light"> cerámica</span></span>
+            <span>{copy.site.brand}</span>
           </Link>
-          <p>Hecho a mano, pieza a pieza.</p>
+          <p>{copy.footer.tagline}</p>
         </div>
-        <nav aria-label="Navegación del pie de página" className="footer-nav">
-          <Link href="/tienda">Piezas</Link>
-          <Link href="/taller">El taller</Link>
-          <Link href="/contact">Contacto</Link>
+        <nav aria-label={copy.navigation.footer} className="footer-nav">
+          <Link href={localizedPath(locale, "tienda")}>
+            {copy.navigation.pieces}
+          </Link>
+          <Link href={localizedPath(locale, "taller")}>
+            {copy.navigation.workshop}
+          </Link>
+          <Link href={localizedPath(locale, "contact")}>
+            {copy.navigation.contact}
+          </Link>
           <a href="https://tallerlibelula.es/" rel="noreferrer" target="_blank">
-            Web actual <span aria-hidden="true">↗</span>
+            {copy.navigation.currentSite} <span aria-hidden="true">↗</span>
           </a>
         </nav>
       </div>
       <div className="site-footer__bottom">
-        <span>© {new Date().getFullYear()} Libélula Cerámica</span>
-        <span>Cerámica artesanal</span>
+        <span>© {new Date().getFullYear()} {copy.site.brand}</span>
+        <span>{copy.footer.descriptor}</span>
       </div>
     </footer>
   );

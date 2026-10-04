@@ -126,6 +126,77 @@ h2 {
   font-size: 13px;
 }
 
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 27px;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown > summary {
+  cursor: pointer;
+  list-style: none;
+  transition: color 160ms ease;
+}
+
+.nav-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-dropdown > summary::after {
+  padding-left: 6px;
+  content: "+";
+}
+
+.nav-dropdown[open] > summary,
+.nav-dropdown > summary:hover {
+  color: var(--clay);
+}
+
+.nav-dropdown__menu {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 17px);
+  left: -14px;
+  display: grid;
+  min-width: 205px;
+  gap: 0;
+  border: 1px solid var(--line);
+  padding: 8px;
+  background: var(--paper);
+  box-shadow: 0 12px 28px rgb(38 41 35 / 12%);
+}
+
+.nav-dropdown__menu a {
+  padding: 9px 10px;
+  font-size: 12px;
+}
+
+.nav-dropdown__menu a:hover {
+  background: var(--paper-deep);
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.language-switcher a {
+  color: var(--muted);
+  transition: color 160ms ease;
+}
+
+.language-switcher a:hover,
+.language-switcher a[aria-current="page"] {
+  color: var(--clay);
+}
+
 .main-nav a,
 .footer-nav a {
   transition: color 160ms ease;
@@ -651,7 +722,7 @@ main {
 
 .contact-panel h2 {
   margin-bottom: 13px;
-  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-size: 56px;
 }
 
 .contact-panel .eyebrow {
@@ -689,6 +760,14 @@ main {
 }
 
 @media (max-width: 900px) {
+  .header-tools {
+    gap: 18px;
+  }
+
+  .main-nav {
+    gap: 23px;
+  }
+
   h2 {
     font-size: 56px;
   }
@@ -801,10 +880,25 @@ main {
   }
 
   .main-nav {
+    width: auto;
+    justify-content: center;
+    gap: 17px;
+    font-size: 12px;
+  }
+
+  .header-tools {
     width: 100%;
     justify-content: center;
-    gap: clamp(22px, 8vw, 38px);
-    font-size: 12px;
+    gap: 15px;
+  }
+
+  .language-switcher {
+    gap: 7px;
+    font-size: 9px;
+  }
+
+  .nav-dropdown__menu {
+    left: -10px;
   }
 
   .hero {
@@ -992,6 +1086,10 @@ main {
 
   .contact-panel__number {
     font-size: 32px;
+  }
+
+  .contact-panel h2 {
+    font-size: 43px;
   }
 }
 

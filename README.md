@@ -17,7 +17,7 @@ El catálogo y las fotografías actuales son contenido de muestra. No se muestra
 - **npm**: Gestor de paquetes.
 - **Git**: Control de versiones.
 - **GitHub**: Repositorio remoto del código.
-- **Vercel**: Plataforma prevista para el despliegue.
+- **Vercel**: Conectado con GitHub para desplegar automáticamente en el dominio propio.
 
 ---
 
@@ -117,22 +117,23 @@ npm run build
 web-empresa/
 │
 ├── public/
-│   └── Recursos estáticos propios
+│   └── images/                   # Imágenes propias versionadas
 │
 ├── src/
 │   ├── app/
-│   │   ├── contact/             # Contacto provisional
-│   │   ├── taller/              # Historia y proceso
-│   │   ├── tienda/              # Catálogo y fichas
+│   │   ├── [locale]/             # Rutas en es, ca y en
+│   │   │   ├── contact/
+│   │   │   ├── taller/
+│   │   │   └── tienda/           # Catálogo, categorías y fichas
 │   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   └── page.tsx
 │   ├── components/
 │   │   ├── layout/              # Cabecera y pie
 │   │   └── store/               # Componentes de catálogo
 │   └── lib/
 │       ├── commerce/            # Notas de integración futura
-│       └── products.ts          # Contenido inicial del catálogo
+│       ├── i18n/                # Diccionarios de interfaz
+│       └── products.ts          # Catálogo de muestra
+├── proxy.ts                      # Prefijo de idioma por defecto
 │
 ├── .nvmrc
 ├── .gitignore
@@ -160,26 +161,28 @@ Con App Router, la estructura de carpetas define automáticamente las rutas.
 Archivo:
 
 ```text
-src/app/page.tsx
+src/app/[locale]/page.tsx
 ```
 
 Ruta generada:
 
 ```text
-/
+/es, /ca, /en
 ```
 
 Archivo:
 
 ```text
-src/app/about/page.tsx
+src/app/[locale]/tienda/[slug]/page.tsx
 ```
 
 Ruta generada:
 
 ```text
-/about
+/es/tienda/taza-de-gres
 ```
+
+El castellano es el idioma por defecto. El selector permite cambiar entre castellano, catalán e inglés y conserva la página actual.
 
 ---
 
@@ -321,7 +324,30 @@ Las herramientas de IA pueden utilizarse para desarrollar y modificar el código
 
 # Contenido y Puesta en Marcha
 
-Los productos de ejemplo viven en `src/lib/products.ts`. Cada pieza incluye un identificador estable, nombre, categoría, texto e imagen. Sustituye los textos y fotografías de muestra por el catálogo y las imágenes propias antes de publicar. Las fotos actuales se sirven desde Unsplash; `next.config.ts` permite ese dominio únicamente para la primera maqueta.
+Los textos de interfaz están en `src/lib/i18n/dictionaries.ts`. Los datos de cada pieza incluyen nombre, descripción, categoría y texto alternativo en `es`, `ca` y `en`.
+
+El catálogo actual vive en `src/lib/products.ts` y es solo de muestra. Para añadir una pieza ahora, crea un objeto con un `slug` único, completa los campos en los tres idiomas y asígnale una categoría. Si aparece una categoría nueva, inclúyela en el producto: la navegación la detecta y genera su página automáticamente. Para retirar una pieza de esta versión, elimínala del array. **Estos cambios en el archivo local requieren `git push` y un despliegue de Vercel.**
+
+Para administrar altas, cambios y bajas sin desplegar, recomiendo conectar Shopify como fuente de catálogo e inventario y mantener este Next.js como escaparate headless. Los productos, categorías, traducciones, fotos, precios y existencias se gestionarían desde Shopify Admin; el sitio leería esos datos y se refrescaría al publicarlos. Se puede importar el catálogo con CSV. Conviene archivar piezas retiradas en vez de borrarlas para conservar pedidos y redirigir enlaces antiguos.
+
+Shopify es una recomendación, no está conectado todavía: hacen falta una cuenta y credenciales para implementar la conexión. Un CMS editorial como Sanity no resuelve por sí solo stock, pedidos y pagos; requeriría integrar otro sistema para esas funciones.
+
+## Imágenes
+
+Las fotos de muestra se sirven desde Unsplash. Para fotos propias que deban viajar con el código, usa `public/images/products/<slug>/` con nombres estables. La guía completa de tamaños, formato, `next/image` y migración a una biblioteca administrable está en [public/images/README.md](public/images/README.md).
+
+No conviene guardar en `public/` el catálogo definitivo si necesitas cambiar fotos sin desplegar: cada archivo versionado forma parte del deploy. Al conectar Shopify, usaremos su CDN de archivos o un servicio de imágenes administrado, y limitaremos sus dominios en `next.config.ts`.
+
+## Siguientes Pasos
+
+1. Sustituir los ejemplos por productos reales, fotografías y traducciones aprobadas.
+2. Elegir y configurar la fuente de catálogo administrable; definir stock, variantes y piezas únicas.
+3. Conectar el catálogo y añadir carrito y checkout alojado por el proveedor.
+4. Confirmar países, impuestos, embalaje, costes y plazos con el taller y el transportista.
+5. Automatizar confirmación de pago, envío, seguimiento, incidencias y devoluciones.
+6. Revisar condiciones de venta, privacidad y obligaciones fiscales aplicables.
+
+La pasarela, la logística y sus tarifas siguen pendientes de decisión; no se deben anunciar como disponibles hasta verificarlas.
 
 Antes de habilitar ventas, confirmar y añadir:
 
@@ -338,11 +364,12 @@ Las notas de arquitectura para estas dos últimas integraciones están en `src/l
 
 # Rutas
 
-- `/`: portada y selección de piezas.
-- `/tienda`: catálogo.
-- `/tienda/[slug]`: detalle de una pieza.
-- `/taller`: relato del taller y el proceso.
-- `/contact`: enlace provisional a la web actual.
+- `/es`, `/ca`, `/en`: portada traducida.
+- `/<idioma>/tienda`: catálogo.
+- `/<idioma>/tienda/<slug>`: detalle de una pieza.
+- `/<idioma>/tienda/categoria/<slug>`: categoría derivada del catálogo.
+- `/<idioma>/taller`: historia y proceso.
+- `/<idioma>/contact`: enlace provisional a la web actual.
 
 ---
 
