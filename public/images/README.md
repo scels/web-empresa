@@ -23,8 +23,8 @@ Renderiza con `next/image`, proporciona texto alternativo localizado, declara la
 
 ## Catálogo administrable
 
-Un archivo en `public/` forma parte del deploy: añadirlo o reemplazarlo requiere commit y despliegue. Para el catálogo real, sube fotos a Shopify Files o al CDN conectado al CMS. Guarda la URL en el producto y sirve la imagen con `next/image`; limita `remotePatterns` de Next.js al host y rutas necesarios.
+Un archivo en `public/` forma parte del deploy: añadirlo o reemplazarlo requiere commit y despliegue. Las fotos del catálogo se suben a Sanity y se sirven desde su CDN con `next/image`; el host permitido está limitado en `next.config.ts`.
 
 Sube una foto original por pieza y deja que la CDN genere tamaños y formatos adecuados. En tarjetas, solicita un tamaño cercano al renderizado; en el detalle, una variante mayor. Mantén nombres, texto alternativo por idioma y orden de galería en los datos del producto, no codificados en cada página.
 
-Las fotos actuales de Unsplash son temporales, no fotografías reales del catálogo.
+El contenido de muestra anterior se ha retirado. Añade fotografías reales desde el Studio de Sanity.

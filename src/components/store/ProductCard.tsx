@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { dictionaries, localizedPath, type Locale } from "@/lib/i18n/dictionaries";
-import type { Product } from "@/lib/products";
+import { getLocalizedValue } from "@/sanity/lib/localized";
+import type { Product } from "@/sanity/lib/types";
 
 type ProductCardProps = {
   locale: Locale;
@@ -12,34 +13,42 @@ type ProductCardProps = {
 export function ProductCard({ locale, product }: ProductCardProps) {
   const copy = dictionaries[locale];
   const productPath = localizedPath(locale, `tienda/${product.slug}`);
+  const name = getLocalizedValue(product.name, locale);
+  const description = getLocalizedValue(product.description, locale);
+  const mainImage = product.images[0];
 
   return (
     <article className="product-card">
       <Link
-        aria-label={`${copy.product.open} ${product.name[locale]}`}
+        aria-label={`${copy.product.open} ${name}`}
         className="product-card__image"
         href={productPath}
       >
-        <Image
-          alt={product.imageAlt[locale]}
-          fill
-          sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw"
-          src={product.image}
-          style={{ objectPosition: product.imagePosition ?? "center" }}
-        />
-        {product.label ? (
-          <span className="product-card__label">{product.label[locale]}</span>
+        {mainImage?.url ? (
+          <Image
+            alt={getLocalizedValue(mainImage.alt, locale)}
+            fill
+            sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw"
+            src={mainImage.url}
+          />
         ) : null}
+        <span className="product-card__label">
+          {copy.product.status[product.status]}
+        </span>
       </Link>
       <div className="product-card__details">
         <div>
-          <p className="eyebrow">{product.category.name[locale]}</p>
+          {product.category ? (
+            <p className="eyebrow">
+              {getLocalizedValue(product.category.name, locale)}
+            </p>
+          ) : null}
           <h3>
-            <Link href={productPath}>{product.name[locale]}</Link>
+            <Link href={productPath}>{name}</Link>
           </h3>
         </div>
         <Link
-          aria-label={`${copy.product.view} ${product.name[locale]}`}
+          aria-label={`${copy.product.view} ${name}`}
           className="round-link"
           href={productPath}
         >
@@ -47,7 +56,7 @@ export function ProductCard({ locale, product }: ProductCardProps) {
         </Link>
       </div>
       <p className="product-card__description">
-        {product.description[locale]}
+        {description}
       </p>
     </article>
   );

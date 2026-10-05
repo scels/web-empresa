@@ -8,9 +8,11 @@ import {
   localizedPath,
   type Locale,
 } from "@/lib/i18n/dictionaries";
-import { getProductBySlug, products } from "@/lib/products";
+import { getProductBySlug, getProducts } from "@/sanity/lib/data";
+import { getLocalizedValue } from "@/sanity/lib/localized";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const products = await getProducts();
   return products.map((product) => ({ slug: product.slug }));
 }
 
@@ -22,12 +24,12 @@ export async function generateMetadata({
   const { locale: rawLocale, slug } = await params;
   if (!isLocale(rawLocale)) return {};
 
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) return {};
 
   return {
-    title: product.name[rawLocale],
-    description: product.description[rawLocale],
+    title: getLocalizedValue(product.name, rawLocale),
+    description: getLocalizedValue(product.description, rawLocale),
   };
 }
 
@@ -41,9 +43,18 @@ export default async function ProductPage({
 
   const locale: Locale = rawLocale;
   const copy = dictionaries[locale];
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) notFound();
+
+  const name = getLocalizedValue(product.name, locale);
+  const description = getLocalizedValue(product.description, locale);
+  const mainImage = product.images[0];
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "EUR",
+    }).format(price);
 
   return (
     <div className="page-shell">
@@ -52,21 +63,49 @@ export default async function ProductPage({
       </Link>
       <article className="product-detail">
         <div className="product-detail__image">
-          <Image
-            alt={product.imageAlt[locale]}
-            fill
-            priority
-            sizes="(max-width: 760px) 100vw, 55vw"
-            src={product.image}
-            style={{ objectPosition: product.imagePosition ?? "center" }}
-          />
+          {mainImage?.url ? (
+            <Image
+              alt={getLocalizedValue(mainImage.alt, locale)}
+              fill
+              priority
+              sizes="(max-width: 760px) 100vw, 55vw"
+              src={mainImage.url}
+            />
+          ) : null}
         </div>
         <div className="product-detail__copy">
-          <p className="eyebrow">{product.category.name[locale]}</p>
-          <h1>{product.name[locale]}</h1>
-          <p className="product-detail__description">
-            {product.description[locale]}
+          <p className="eyebrow">
+            {product.category
+              ? `${getLocalizedValue(product.category.name, locale)} · `
+              : ""}
+            {copy.product.status[product.status]}
           </p>
+          <h1>{name}</h1>
+          <p className="product-detail__description">
+            {description}
+          </p>
+          {product.price !== null ? (
+            <p>
+              <strong>{copy.product.price}:</strong> {formatPrice(product.price)}
+            </p>
+          ) : null}
+          {product.dimensions ? (
+            <p>
+              <strong>{copy.product.dimensions}:</strong> {product.dimensions}
+            </p>
+          ) : null}
+          {product.material ? (
+            <p>
+              <strong>{copy.product.material}:</strong>{" "}
+              {getLocalizedValue(product.material, locale)}
+            </p>
+          ) : null}
+          {product.technique ? (
+            <p>
+              <strong>{copy.product.technique}:</strong>{" "}
+              {getLocalizedValue(product.technique, locale)}
+            </p>
+          ) : null}
           <p>{copy.product.handmade}</p>
           <Link
             className="button button--dark"
