@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ProductCard } from "@/components/store/ProductCard";
+import { CategoryLinks } from "@/components/store/CategoryLinks";
 import {
   dictionaries,
   isLocale,
-  localizedPath,
   type Locale,
 } from "@/lib/i18n/dictionaries";
 import { getCategories, getProducts } from "@/sanity/lib/data";
-import { getLocalizedValue } from "@/sanity/lib/localized";
 
 type StorePageProps = {
   params: Promise<{ locale: string }>;
@@ -43,14 +41,7 @@ export default async function StorePage({ params }: StorePageProps) {
       </section>
       {categories.length ? (
         <nav aria-label={copy.navigation.categories} className="category-links">
-          {categories.map((category) => (
-            <Link
-              href={localizedPath(locale, `tienda/categoria/${category.slug}`)}
-              key={category.slug}
-            >
-              {getLocalizedValue(category.name, locale)}
-            </Link>
-          ))}
+          <CategoryLinks categories={categories} locale={locale} />
         </nav>
       ) : null}
       <section aria-label={copy.shop.collectionAlt} className="catalog-section">

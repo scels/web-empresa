@@ -24,6 +24,7 @@ export default async function HomePage({
   const locale: Locale = rawLocale;
   const copy = dictionaries[locale];
   const [products, categories] = await Promise.all([getProducts(), getCategories()]);
+  const mainCategories = categories.filter((category) => !category.parent);
   const featuredProducts = products.filter((product) => product.featured);
   const homeProducts = (featuredProducts.length ? featuredProducts : products).slice(0, 3);
 
@@ -53,7 +54,7 @@ export default async function HomePage({
         <span className="hero__index">{copy.home.heroIndex}</span>
       </section>
 
-      {categories.length ? (
+      {mainCategories.length ? (
         <section className="home-categories section-wrap">
           <div className="home-categories__intro">
             <p className="eyebrow">{copy.navigation.categories}</p>
@@ -61,7 +62,7 @@ export default async function HomePage({
             <p>{copy.home.categoriesIntro}</p>
           </div>
           <div className="home-categories__grid">
-            {categories.map((category) => {
+            {mainCategories.map((category) => {
               const product = products.find((piece) =>
                 piece.category?.slug === category.slug ||
                 categories.find((entry) => entry.slug === piece.category?.slug)?.parent?.slug === category.slug,

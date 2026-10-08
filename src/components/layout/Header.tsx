@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { CategoryLinks } from "@/components/store/CategoryLinks";
 import { dictionaries, localizedPath, type Locale } from "@/lib/i18n/dictionaries";
 import { getCategories } from "@/sanity/lib/data";
-import { getLocalizedValue } from "@/sanity/lib/localized";
 
 type HeaderProps = {
   locale: Locale;
@@ -38,17 +38,7 @@ export async function Header({ locale }: HeaderProps) {
                 className="nav-dropdown__menu"
                 role="group"
               >
-                {categories.map((category) => (
-                  <Link
-                    href={localizedPath(
-                      locale,
-                      `tienda/categoria/${category.slug}`,
-                    )}
-                    key={category.slug}
-                  >
-                    {getLocalizedValue(category.name, locale)}
-                  </Link>
-                ))}
+                <CategoryLinks categories={categories} locale={locale} />
               </div>
             </div>
             <Link href={localizedPath(locale, "taller")}>
