@@ -21,21 +21,23 @@ export async function Header({ locale }: HeaderProps) {
           className="wordmark"
           href={localizedPath(locale)}
         >
-          <span aria-hidden="true" className="wordmark__mark">l.</span>
+          <span aria-hidden="true" className="wordmark__mark">XC</span>
           <span>{copy.site.brand}</span>
         </Link>
         <div className="header-tools">
           <nav aria-label={copy.navigation.label} className="main-nav">
-            <details className="nav-dropdown">
-              <summary>{copy.navigation.pieces}</summary>
+            <div className="nav-dropdown">
+              <Link
+                className="nav-dropdown__trigger"
+                href={localizedPath(locale, "tienda")}
+              >
+                {copy.navigation.pieces}
+              </Link>
               <div
                 aria-label={copy.navigation.categories}
                 className="nav-dropdown__menu"
                 role="group"
               >
-                <Link href={localizedPath(locale, "tienda")}>
-                  {copy.navigation.allPieces}
-                </Link>
                 {categories.map((category) => (
                   <Link
                     href={localizedPath(
@@ -48,7 +50,7 @@ export async function Header({ locale }: HeaderProps) {
                   </Link>
                 ))}
               </div>
-            </details>
+            </div>
             <Link href={localizedPath(locale, "taller")}>
               {copy.navigation.workshop}
             </Link>

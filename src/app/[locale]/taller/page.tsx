@@ -9,9 +9,6 @@ import {
   localizedPath,
   type Locale,
 } from "@/lib/i18n/dictionaries";
-import { getProducts, getSiteContent } from "@/sanity/lib/data";
-import { getLocalizedValue } from "@/sanity/lib/localized";
-
 type WorkshopPageProps = {
   params: Promise<{ locale: string }>;
 };
@@ -19,14 +16,9 @@ type WorkshopPageProps = {
 export async function generateMetadata({ params }: WorkshopPageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  const siteContent = await getSiteContent();
   return {
-    title:
-      getLocalizedValue(siteContent?.workshopTitle, locale) ||
-      dictionaries[locale].workshop.eyebrow,
-    description:
-      getLocalizedValue(siteContent?.workshopIntro, locale) ||
-      dictionaries[locale].workshop.intro,
+    title: dictionaries[locale].workshop.title,
+    description: dictionaries[locale].workshop.intro,
   };
 }
 
@@ -36,79 +28,80 @@ export default async function WorkshopPage({ params }: WorkshopPageProps) {
 
   const locale: Locale = rawLocale;
   const copy = dictionaries[locale];
-  const siteContent = await getSiteContent();
-  const firstProduct = (await getProducts())[0];
-  const workshopImage = siteContent?.workshopImage?.url
-    ? siteContent.workshopImage
-    : firstProduct?.images[0];
-  const workshopSteps = siteContent?.workshopSteps?.length
-    ? siteContent.workshopSteps.map((step) => ({
-        title: getLocalizedValue(step.title, locale),
-        body: getLocalizedValue(step.body, locale),
-      }))
-    : copy.workshop.steps;
 
   return (
     <div className="page-shell">
       <section className="page-intro page-intro--wide">
         <p className="eyebrow">{copy.workshop.eyebrow}</p>
-        <h1>
-          {getLocalizedValue(siteContent?.workshopTitle, locale) ||
-            copy.workshop.title}
-        </h1>
-        <p>
-          {getLocalizedValue(siteContent?.workshopIntro, locale) ||
-            copy.workshop.intro}
-        </p>
+        <h1>{copy.workshop.title}</h1>
+        <p>{copy.workshop.intro}</p>
+        {copy.workshop.location ? <p>{copy.workshop.location}</p> : null}
       </section>
       <section className="story-layout">
         <div className="story-layout__image">
-          {workshopImage?.url ? (
-            <Image
-              alt={getLocalizedValue(workshopImage.alt, locale) || copy.workshop.imageAlt}
-              fill
-              priority
-              sizes="(max-width: 760px) 100vw, 54vw"
-              src={workshopImage.url}
-            />
-          ) : null}
+          <Image
+            alt={copy.workshop.imageAlt}
+            fill
+            loading="eager"
+            priority
+            sizes="(max-width: 760px) 100vw, 54vw"
+            src={copy.workshop.image}
+          />
         </div>
         <div className="story-layout__copy">
-          <p className="eyebrow">
-            {getLocalizedValue(siteContent?.workshopProcessEyebrow, locale) ||
-              copy.workshop.processEyebrow}
-          </p>
-          <h2>
-            {getLocalizedValue(siteContent?.workshopProcessTitle, locale) ||
-              copy.workshop.processTitle}
-          </h2>
-          <p>
-            {getLocalizedValue(siteContent?.workshopParagraphOne, locale) ||
-              copy.workshop.paragraphOne}
-          </p>
-          <p>
-            {getLocalizedValue(siteContent?.workshopParagraphTwo, locale) ||
-              copy.workshop.paragraphTwo}
-          </p>
+          <p className="eyebrow">Taller Libélula</p>
+          <h2>{copy.workshop.spaceTitle}</h2>
+          <p>{copy.workshop.spaceBody}</p>
           <Link className="text-link" href={localizedPath(locale, "tienda")}>
             {copy.workshop.discover} <span aria-hidden="true">↗</span>
           </Link>
         </div>
       </section>
+      <section className="workshop-process">
+        <div>
+          <p className="eyebrow">{copy.workshop.processEyebrow}</p>
+          <h2>{copy.workshop.processTitle}</h2>
+        </div>
+        <div>
+          <p>{copy.workshop.paragraphOne}</p>
+          <p>{copy.workshop.paragraphTwo}</p>
+        </div>
+      </section>
       <section
         className="process-strip"
-        aria-label={
-          getLocalizedValue(siteContent?.workshopStepsLabel, locale) ||
-          copy.workshop.stepsLabel
-        }
+        aria-label={copy.workshop.stepsLabel}
       >
-        {workshopSteps.map((step, index) => (
+        {copy.workshop.steps.map((step, index) => (
           <div key={step.title}>
             <span>{String(index + 1).padStart(2, "0")}</span>
             <h3>{step.title}</h3>
             <p>{step.body}</p>
           </div>
         ))}
+      </section>
+      <section className="workshop-pieces">
+        <div className="workshop-pieces__copy">
+          <h2>{copy.workshop.piecesTitle}</h2>
+          <p>{copy.workshop.piecesBody}</p>
+        </div>
+        <div className="workshop-pieces__images">
+          <div>
+            <Image
+              alt={copy.workshop.piecesAlt}
+              fill
+              sizes="(max-width: 640px) 50vw, 30vw"
+              src="/images/productos_boles.jpeg"
+            />
+          </div>
+          <div>
+            <Image
+              alt={copy.workshop.piecesDetailAlt}
+              fill
+              sizes="(max-width: 640px) 50vw, 30vw"
+              src="/images/productos_v2.jpeg"
+            />
+          </div>
+        </div>
       </section>
     </div>
   );

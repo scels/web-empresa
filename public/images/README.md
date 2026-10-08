@@ -2,29 +2,28 @@
 
 ## Organización local
 
-Las imágenes propias que deban viajar junto al código pueden organizarse así:
+Las imágenes editoriales fijas (portada, historia, taller y contacto) viven en este directorio porque no se editarán habitualmente desde el Studio. Sus rutas se guardan en `src/lib/i18n/dictionaries.ts`.
 
 ```text
 public/images/
-├── brand/
-│   └── studio.webp
-└── products/
-    └── taza-de-gres/
-        ├── taza-de-gres-01.webp
-        └── taza-de-gres-02.webp
+├── xavier-home-hero.webp
+├── pieza_modelado_en_torno.jpeg
+├── taller_entrada.jpeg
+├── productos_boles.jpeg
+├── productos_v2.jpeg
+├── collage_proceso_bol.jpeg
 ```
 
-En las páginas, la ruta pública empieza en `/`, por ejemplo:
-`/images/products/taza-de-gres/taza-de-gres-01.webp`.
+En las páginas, la ruta pública empieza en `/`, por ejemplo `/images/xavier-home-hero.webp`.
+
+Taller utiliza solo la entrada y la selección de boles indicada arriba, sin galería de proceso con pies de foto. Las imágenes de categorías en Inicio se obtienen de productos de esa categoría publicados en Sanity.
 
 Conserva los originales fuera del repositorio. Exporta copias web con el encuadre correcto, elimina metadatos innecesarios y usa WebP o AVIF cuando el flujo de edición lo permita. Para una tienda pequeña, una imagen de producto de alrededor de 1.200 a 1.600 píxeles en su lado largo suele bastar; conserva el original mayor para futuros recortes. Evita usar el original de cámara en cada tarjeta.
 
 Renderiza con `next/image`, proporciona texto alternativo localizado, declara la proporción con `width`/`height` o usa `fill` dentro de un contenedor con proporción fija, y configura `sizes` según el diseño. Reserva prioridad alta para la imagen principal visible al cargar; las imágenes fuera del primer pantallazo deben usar carga diferida normal.
 
-## Catálogo administrable
+## Fotografías de producto
 
-Un archivo en `public/` forma parte del deploy: añadirlo o reemplazarlo requiere commit y despliegue. Las fotos del catálogo se suben a Sanity y se sirven desde su CDN con `next/image`; el host permitido está limitado en `next.config.ts`.
+Las fotos de producto se suben a Sanity y se sirven desde su CDN con `next/image`; el host permitido está limitado en `next.config.ts`. Así tu padre puede actualizar el catálogo sin cambiar código ni hacer un deploy.
 
-Sube una foto original por pieza y deja que la CDN genere tamaños y formatos adecuados. En tarjetas, solicita un tamaño cercano al renderizado; en el detalle, una variante mayor. Mantén nombres, texto alternativo por idioma y orden de galería en los datos del producto, no codificados en cada página.
-
-El contenido de muestra anterior se ha retirado. Añade fotografías reales desde el Studio de Sanity.
+Las imágenes editoriales de `public/` sí forman parte del deploy: cambiarlas requiere un commit y desplegar el código. Para sustituir una, conserva la proporción prevista y actualiza su ruta y texto alternativo en los diccionarios.

@@ -1,8 +1,8 @@
-# Libélula Cerámica
+# Xavier Cels
 
-Primera versión de la tienda de autor de Libélula, construida con **Next.js**, **React**, **TypeScript** y **Tailwind CSS**. Incluye portada, catálogo, fichas de producto, historia del taller y contacto.
+Web de Xavier Cels, ceramista, construida con **Next.js**, **React**, **TypeScript** y **Tailwind CSS**. Incluye portada, catálogo, fichas de producto, proceso de trabajo y contacto.
 
-El catálogo y las fotografías actuales son contenido de muestra. No se muestran precios ni se aceptan pedidos o pagos todavía. La web anterior sigue siendo el canal de contacto mientras se confirma la información del negocio.
+El catálogo se gestiona en Sanity. No hay compra online, carrito ni pagos.
 
 ---
 
@@ -325,7 +325,7 @@ Las herramientas de IA pueden utilizarse para desarrollar y modificar el código
 
 ## Contenido y Puesta en Marcha
 
-Los productos, las categorías y el documento `Contenido del sitio` se gestionan en Sanity. Los esquemas están en `src/sanity/schemaTypes/`, las consultas GROQ en `src/sanity/lib/queries.ts` y el cliente de lectura en `src/sanity/lib/client.ts`. `Contenido del sitio` permite editar portada, taller y contacto; las etiquetas de interfaz siguen en `src/lib/i18n/dictionaries.ts`.
+Los productos y las categorías se gestionan en Sanity. Los textos y las imágenes editoriales de Inicio, Taller y Contacto son estáticos y viven en `src/lib/i18n/dictionaries.ts` y `public/images/`. Los esquemas de catálogo están en `src/sanity/schemaTypes/`, las consultas GROQ en `src/sanity/lib/queries.ts` y el cliente de lectura en `src/sanity/lib/client.ts`.
 
 Para conectar el proyecto local:
 
@@ -333,20 +333,18 @@ Para conectar el proyecto local:
 2. En Sanity Manage, añade `http://localhost:3000` como origen CORS y permite credenciales.
 3. Arranca `npm run dev`, abre `http://localhost:3000/studio` e inicia sesión con tu cuenta de Sanity.
 4. Crea y publica una categoría; después crea un producto, asígnale esa categoría, añade fotografía y texto alternativo, y publícalo.
-5. Crea un documento `Contenido del sitio` para editar Inicio, Taller y Contacto.
-6. Comprueba `/es/tienda/<slug>` y las páginas públicas. Los cambios publicados pueden tardar hasta un minuto en aparecer.
+5. Comprueba `/es/tienda/<slug>` y las páginas públicas. Los cambios publicados pueden tardar hasta un minuto en aparecer.
 
 Los campos de texto traducibles admiten español, catalán e inglés; si falta una traducción, el escaparate usa el español. Precio y referencia son opcionales. El precio es informativo: no hay carrito ni pagos.
 
 ## Imágenes
 
-Las fotografías del catálogo y el contenido editorial se suben a Sanity y se sirven desde su CDN con `next/image`. El dominio permitido está limitado en `next.config.ts`; no hace falta copiar imágenes al repositorio ni desplegar para cambiarlas.
+Las fotografías de producto se suben a Sanity y se sirven desde su CDN con `next/image`. Las imágenes editoriales estáticas están en `public/images/` y requieren un despliegue de código para cambiarse.
 
 ## Siguientes Pasos
 
-1. Crear y publicar el documento `Contenido del sitio` con textos e imágenes reales.
-2. Completar categorías y productos, indicando las traducciones y el estado de cada pieza.
-3. Añadir en Vercel las mismas variables `NEXT_PUBLIC_SANITY_*` y el dominio de producción a CORS.
+1. Completar categorías y productos, indicando las traducciones y el estado de cada pieza.
+2. Añadir en Vercel las mismas variables `NEXT_PUBLIC_SANITY_*` y el dominio de producción a CORS.
 
 La compra online, los pagos y los envíos quedan fuera de esta fase.
 
@@ -359,7 +357,7 @@ La compra online, los pagos y los envíos quedan fuera de esta fase.
 - `/<idioma>/tienda/<slug>`: detalle de una pieza.
 - `/<idioma>/tienda/categoria/<slug>`: categoría derivada del catálogo.
 - `/<idioma>/taller`: historia y proceso.
-- `/<idioma>/contact`: enlace provisional a la web actual.
+- `/<idioma>/contact`: información de contacto estática con enlace a Instagram.
 
 ---
 

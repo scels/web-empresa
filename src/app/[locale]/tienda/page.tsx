@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ProductCard } from "@/components/store/ProductCard";
 import {
   dictionaries,
   isLocale,
+  localizedPath,
   type Locale,
 } from "@/lib/i18n/dictionaries";
-import { getProducts } from "@/sanity/lib/data";
+import { getCategories, getProducts } from "@/sanity/lib/data";
+import { getLocalizedValue } from "@/sanity/lib/localized";
 
 type StorePageProps = {
   params: Promise<{ locale: string }>;
@@ -29,7 +32,7 @@ export default async function StorePage({ params }: StorePageProps) {
 
   const locale: Locale = rawLocale;
   const copy = dictionaries[locale];
-  const products = await getProducts();
+  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
 
   return (
     <div className="page-shell">
@@ -38,6 +41,18 @@ export default async function StorePage({ params }: StorePageProps) {
         <h1>{copy.shop.title}</h1>
         <p>{copy.shop.intro}</p>
       </section>
+      {categories.length ? (
+        <nav aria-label={copy.navigation.categories} className="category-links">
+          {categories.map((category) => (
+            <Link
+              href={localizedPath(locale, `tienda/categoria/${category.slug}`)}
+              key={category.slug}
+            >
+              {getLocalizedValue(category.name, locale)}
+            </Link>
+          ))}
+        </nav>
+      ) : null}
       <section aria-label={copy.shop.collectionAlt} className="catalog-section">
         <div className="catalog-toolbar">
           <span>

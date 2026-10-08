@@ -18,7 +18,7 @@ export function Footer({ locale }: FooterProps) {
             className="wordmark wordmark--footer"
             href={localizedPath(locale)}
           >
-            <span aria-hidden="true" className="wordmark__mark">l.</span>
+            <span aria-hidden="true" className="wordmark__mark">XC</span>
             <span>{copy.site.brand}</span>
           </Link>
           <p>{copy.footer.tagline}</p>
@@ -33,9 +33,6 @@ export function Footer({ locale }: FooterProps) {
           <Link href={localizedPath(locale, "contact")}>
             {copy.navigation.contact}
           </Link>
-          <a href="https://tallerlibelula.es/" rel="noreferrer" target="_blank">
-            {copy.navigation.currentSite} <span aria-hidden="true">↗</span>
-          </a>
         </nav>
       </div>
       <div className="site-footer__bottom">

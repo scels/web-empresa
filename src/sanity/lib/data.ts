@@ -1,4 +1,4 @@
-import type { Category, Product, SiteContent } from "@/sanity/lib/types";
+import type { Category, Product } from "@/sanity/lib/types";
 
 import { sanityFetch } from "./client";
 import {
@@ -7,12 +7,7 @@ import {
   PRODUCT_BY_SLUG_QUERY,
   PRODUCTS_BY_CATEGORY_QUERY,
   PRODUCTS_QUERY,
-  SITE_CONTENT_QUERY,
 } from "./queries";
-
-export async function getSiteContent(): Promise<SiteContent> {
-  return sanityFetch<SiteContent>({ query: SITE_CONTENT_QUERY });
-}
 
 export async function getProducts(): Promise<Product[]> {
   return (await sanityFetch<Product[]>({ query: PRODUCTS_QUERY })) ?? [];

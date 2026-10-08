@@ -7,7 +7,7 @@ import { schemaTypes } from "./src/sanity/schemaTypes";
 
 export default defineConfig({
   name: "default",
-  title: "Libélula Cerámica",
+  title: "Xavier Cels",
   projectId: process.env.SANITY_STUDIO_PROJECT_ID ?? "",
   dataset: process.env.SANITY_STUDIO_DATASET ?? "production",
   basePath: "/studio",

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { dictionaries, isLocale } from "@/lib/i18n/dictionaries";
-import { getSiteContent } from "@/sanity/lib/data";
-import { getLocalizedValue } from "@/sanity/lib/localized";
 
 type ContactPageProps = {
   params: Promise<{ locale: string }>;
@@ -12,14 +11,9 @@ type ContactPageProps = {
 export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  const siteContent = await getSiteContent();
   return {
-    title:
-      getLocalizedValue(siteContent?.contactTitle, locale) ||
-      dictionaries[locale].navigation.contact,
-    description:
-      getLocalizedValue(siteContent?.contactIntro, locale) ||
-      dictionaries[locale].contact.intro,
+    title: dictionaries[locale].navigation.contact,
+    description: dictionaries[locale].contact.intro,
   };
 }
 
@@ -28,47 +22,67 @@ export default async function ContactPage({ params }: ContactPageProps) {
   if (!isLocale(locale)) notFound();
 
   const copy = dictionaries[locale];
-  const siteContent = await getSiteContent();
-  const contactUrl = siteContent?.contactLinkUrl || "https://tallerlibelula.es/";
+  const contact = copy.contact;
+  const channels = [
+    {
+      name: "Instagram",
+      detail: "@xavicels_ceramics",
+      description: contact.instagramNote,
+      href: contact.linkUrl,
+    },
+    {
+      name: "WhatsApp",
+      detail: "+34 677 970 534",
+      description: contact.whatsappNote,
+      href: "https://wa.me/34677970534",
+    },
+    {
+      name: contact.phoneLabel,
+      detail: "+34 677 970 534",
+      description: contact.phoneNote,
+      href: "tel:+34677970534",
+    },
+  ];
 
   return (
     <div className="page-shell contact-page">
       <section className="page-intro">
         <p className="eyebrow">{copy.contact.eyebrow}</p>
-        <h1>
-          {getLocalizedValue(siteContent?.contactTitle, locale) ||
-            copy.contact.title}
-        </h1>
-        <p>
-          {getLocalizedValue(siteContent?.contactIntro, locale) ||
-            copy.contact.intro}
-        </p>
+        <h1>{contact.title}</h1>
+        <p>{contact.intro}</p>
       </section>
-      <section className="contact-panel">
+      <section className="contact-panel contact-panel--with-image">
         <div className="contact-panel__number">01</div>
         <div>
-          <p className="eyebrow">
-            {getLocalizedValue(siteContent?.contactPanelEyebrow, locale) ||
-              copy.contact.panelEyebrow}
-          </p>
-          <h2>
-            {getLocalizedValue(siteContent?.contactPanelTitle, locale) ||
-              copy.contact.panelTitle}
-          </h2>
-          <p>
-            {getLocalizedValue(siteContent?.contactPanelBody, locale) ||
-              copy.contact.panelBody}
-          </p>
-          <a
-            className="button button--dark"
-            href={contactUrl}
-            rel="noreferrer"
-            target="_blank"
-          >
-            {getLocalizedValue(siteContent?.contactLinkText, locale) ||
-              copy.contact.link}{" "}
-            <span aria-hidden="true">↗</span>
-          </a>
+          <p className="eyebrow">{contact.panelEyebrow}</p>
+          <h2>{contact.panelTitle}</h2>
+          <p>{contact.panelBody}</p>
+          <nav className="contact-channels" aria-label={contact.channelsLabel}>
+            {channels.map((channel) => (
+              <a
+                className="contact-channel"
+                href={channel.href}
+                key={channel.name}
+                target={channel.href.startsWith("https:") ? "_blank" : undefined}
+                rel={channel.href.startsWith("https:") ? "noopener noreferrer" : undefined}
+              >
+                <span className="contact-channel__heading">
+                  <strong>{channel.name}</strong>
+                  <span aria-hidden="true">↗</span>
+                </span>
+                <span className="contact-channel__detail">{channel.detail}</span>
+                <span>{channel.description}</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+        <div className="contact-panel__image">
+          <Image
+            alt={contact.imageAlt}
+            fill
+            sizes="(max-width: 640px) 100vw, 35vw"
+            src={contact.image}
+          />
         </div>
       </section>
     </div>
